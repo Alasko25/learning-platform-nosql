@@ -32,8 +32,13 @@ async function connectMongo() {
     console.log(`Connexion à MongoDB réussie (Base de données : ${dbName})`);
   } catch (error) {
     console.error('Erreur de connexion à MongoDB:', error.message);
-    // Implémentation de retries sur la connexion
-    setTimeout(connectMongo, 5000); // Nouvelle tentative après 5 secondes
+    // Arrêt immédiat des tests si la connexion échoue
+    if (process.env.NODE_ENV === 'test') {
+      throw new Error('MongoDB connection failed during tests');
+    } else {
+      // Tentatives de reconnexion en cas d'échec en production
+      setTimeout(connectMongo, 5000); // Nouvelle tentative après 5 secondes
+    }
   }
 }
 
@@ -54,13 +59,21 @@ async function connectRedis() {
     redisClient.on('error', (err) => {
       console.error('Erreur de connexion à Redis:', err);
       // Tentatives de reconnexion en cas d'erreur
-      setTimeout(connectRedis, 5000); // Nouvelle tentative après 5 secondes
+      if (process.env.NODE_ENV !== 'test') {
+        setTimeout(connectRedis, 5000); // Nouvelle tentative après 5 secondes
+      } else {
+        throw new Error('Redis connection failed during tests');
+      }
     });
     await redisClient.connect();
   } catch (error) {
     console.error('Erreur de connexion à Redis:', error);
     // Tentatives de reconnexion en cas d'erreur
-    setTimeout(connectRedis, 5000); // Nouvelle tentative après 5 secondes
+    if (process.env.NODE_ENV !== 'test') {
+      setTimeout(connectRedis, 5000); // Nouvelle tentative après 5 secondes
+    } else {
+      throw new Error('Redis connection failed during tests');
+    }
   }
 }
 
