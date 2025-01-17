@@ -1,3 +1,8 @@
+# Fichier completer
+
 node_modules/
+
+#env file
 .env
+
 test.txt
