@@ -18,8 +18,8 @@ let mongoClient, redisClient, db;
 // Fonction pour se connecter à MongoDB
 async function connectMongo() {
   try {
-    const mongoUri = process.env.MONGODB_URI;
-    const dbName = process.env.MONGODB_DB_NAME;
+    const mongoUri = config.mongodb.uri;
+    const dbName = config.mongodb.dbName;
 
     if (!mongoUri || !dbName) {
       throw new Error('MONGODB_URI or MONGODB_DB_NAME is not defined in environment variables');
