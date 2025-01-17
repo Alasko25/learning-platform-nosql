@@ -1,3 +1,6 @@
-# Compléter ici !!!!???
+# Fichier completer
 
-node_modules
+node_modules/
+
+#env file
+.env
